@@ -18,7 +18,6 @@
  */
 package de.fherfurt.jpa.storages;
 
-import de.fherfurt.jpa.domains.Address;
 import de.fherfurt.jpa.domains.Person;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +30,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  *
- * @author Michael Rhöse
+ * @author Michael RhÃ¶se
  */
 class PersonRepositoryTest {
 
@@ -45,13 +44,12 @@ class PersonRepositoryTest {
     @AfterEach
     public void afterEach() {
         repository.deleteAll();
-        new AddressRepository().deleteAll();
     }
 
     @Test
     void save() {
         // GIVEN
-        Person given = new Person("Hans", "Musterfrau", "test@gmx.com");
+        Person given = new Person("Hans", "Musterfrau", "test@gmx.com", null);
 
         // WHEN
         Long result = repository.save(given);
@@ -65,8 +63,8 @@ class PersonRepositoryTest {
     @Test
     void findAll() {
         // GIVEN
-        Person given1 = new Person("Hans", "Musterfrau", "test@gmx.com");
-        Person given2 = new Person("Frauke", "Mustermann", "test2@gmx.com");
+        Person given1 = new Person("Hans", "Musterfrau", "test@gmx.com", null);
+        Person given2 = new Person("Frauke", "Mustermann", "test2@gmx.com", null);
 
         List<Long> idsOfPersisted = new ArrayList<>();
         idsOfPersisted.add(repository.save(given1));
@@ -83,8 +81,8 @@ class PersonRepositoryTest {
     @Test
     void findByName() {
         // GIVEN
-        Person given1 = new Person("Hans", "Musterfrau", "test@gmx.com");
-        Person given2 = new Person("Frauke", "Mustermann", "test2@gmx.com");
+        Person given1 = new Person("Hans", "Musterfrau", "test@gmx.com", null);
+        Person given2 = new Person("Frauke", "Mustermann", "test2@gmx.com", null);
 
         repository.save(given1);
         repository.save(given2);
@@ -96,35 +94,5 @@ class PersonRepositoryTest {
         Assertions.assertThat(result).isPresent();
         Assertions.assertThat(result.get().getFirstName()).isEqualTo("Frauke");
         Assertions.assertThat(result.get().getLastName()).isEqualTo("Mustermann");
-    }
-
-    @Test
-    void findByNameWithAddress() {
-        // GIVEN
-        Person given1 = new Person("Hans", "Musterfrau", "test@gmx.com");
-        Address address1 = new Address("Leutragraben 1", "Jena", "07745");
-
-        given1.setAddress(address1);
-
-        Person given2 = new Person("Frauke", "Mustermann", "test2@gmx.com");
-        Address address2 = new Address("Anger 24", "Erfurt", "99084");
-
-        given2.setAddress(address2);
-
-        repository.save(given1);
-        repository.save(given2);
-
-        // WHEN
-        Optional<Person> result = repository.findBy("Mustermann");
-
-        // WHEN
-        Assertions.assertThat(result).isPresent();
-        Assertions.assertThat(result.get().getFirstName()).isEqualTo("Frauke");
-        Assertions.assertThat(result.get().getLastName()).isEqualTo("Mustermann");
-        Assertions.assertThat(result.get().getAddress()).isNotNull();
-
-        Address loadedAddress = result.get().getAddress();
-        Assertions.assertThat(loadedAddress.getStreet()).isEqualTo("Anger 24");
-        Assertions.assertThat(loadedAddress.getCity()).isEqualTo("Erfurt");
     }
 }

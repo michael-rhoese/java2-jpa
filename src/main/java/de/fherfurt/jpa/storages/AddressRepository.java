@@ -31,130 +31,20 @@ import java.util.Objects;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.persistence.EntityManager;
+
 /**
  * <h2>AddressRepository</h2>
  * <p>
  * {description}
  *
- * @author Michael Rhöse
+ * @author Michael RhÃ¶se
  * @version 0.0.0.0, 05/02/2021
  */
 @Slf4j
-public class AddressRepository {
+public class AddressRepository extends BaseRepository<Address> {
 
-    private static final String INSERT_ADDRESS
-            = "insert into " + Address.TABLE_NAME + " ("
-            + Address.COLUMN_STREET + ", "
-            + Address.COLUMN_CITY + ", "
-            + Address.COLUMN_ZIPCODE + " ) VALUES ( ?, ?, ?)";
-
-    private static final String UPDATE_ADDRESS
-            = "update " + Address.TABLE_NAME + " set "
-            + Address.COLUMN_STREET + " = ?, "
-            + Address.COLUMN_CITY + " = ?, "
-            + Address.COLUMN_ZIPCODE + " = ? where " + Address.COLUMN_ID + " = ?";
-
-    private static final String SELECT_ALL_FROM_ADDRESS = "select * from " + Address.TABLE_NAME;
-
-    private static final String DELETE_ALL = "delete from " + Address.TABLE_NAME;
-
-    public Long save(Address address) {
-        if (Objects.isNull(address)) {
-            return -1L;
-        }
-
-        try {
-            H2Controller.getManager().getConnection().setAutoCommit(false);
-
-            boolean newAddress = Objects.isNull(address.getId());
-
-            final PreparedStatement statement = H2Controller.getManager().getConnection().prepareStatement((newAddress) ? INSERT_ADDRESS : UPDATE_ADDRESS, new String[]{"ID"});
-
-            statement.setString(1, address.getStreet());
-            statement.setString(2, address.getCity());
-            statement.setString(3, address.getZipcode());
-
-            if (newAddress) {
-                statement.executeUpdate();
-                ResultSet generatedKeys = statement.getGeneratedKeys();
-                generatedKeys.next();
-                Long personId = generatedKeys.getLong(1);
-                address.setId(personId);
-                LOGGER.info("Saved Address [" + address + "] with id [" + personId + "]");
-            } else {
-                statement.setLong(4, address.getId());
-                statement.executeUpdate();
-                LOGGER.info("Updated Address [" + address + "]");
-            }
-            H2Controller.getManager().getConnection().setAutoCommit(true);
-
-        } catch (SQLException throwables) {
-            throw new SqlException("Error while saving Address", throwables);
-        }
-
-        return address.getId();
-    }
-
-    public List<Address> findAll() {
-        final List<Address> res = new ArrayList<>();
-
-        try {
-            final Statement selectAddresssStatement = H2Controller.getManager().getConnection().createStatement();
-            final ResultSet personsResultSet = selectAddresssStatement.executeQuery(SELECT_ALL_FROM_ADDRESS);
-            while (personsResultSet.next()) {
-                String street = personsResultSet.getString(Address.COLUMN_STREET);
-                String city = personsResultSet.getString(Address.COLUMN_CITY);
-                String zipcode = personsResultSet.getString(Address.COLUMN_ZIPCODE);
-
-                final Address address = new Address(street, city, zipcode);
-
-                address.setId(personsResultSet.getLong(Address.COLUMN_ID));
-
-                LOGGER.info("Loaded Address from Database [" + address + "]");
-                res.add(address);
-            }
-        } catch (SQLException e) {
-            LOGGER.error("Error while reading Addressbook from Database " + e.getMessage());
-            throw new SqlException("Error while reading Addressbook from Database " + e.getMessage(), e);
-        }
-
-        return res;
-    }
-
-    public Optional<Address> findBy(Long id) {
-
-        if (Objects.isNull(id) || id == -1) {
-            return Optional.empty();
-        }
-
-        try {
-            final Statement selectAddresssStatement = H2Controller.getManager().getConnection().createStatement();
-            final ResultSet personsResultSet = selectAddresssStatement.executeQuery(SELECT_ALL_FROM_ADDRESS + " WHERE " + Address.COLUMN_ID + " = '" + id + "'");
-            personsResultSet.next();
-
-            String street = personsResultSet.getString(Address.COLUMN_STREET);
-            String city = personsResultSet.getString(Address.COLUMN_CITY);
-            String zipcode = personsResultSet.getString(Address.COLUMN_ZIPCODE);
-
-            final Address address = new Address(street, city, zipcode);
-
-            address.setId(personsResultSet.getLong(Address.COLUMN_ID));
-
-            LOGGER.info("Loaded Address from Database [" + address + "]");
-            return Optional.of(address);
-        } catch (SQLException e) {
-            LOGGER.error("Error while reading Addressbook from Database " + e.getMessage());
-            throw new SqlException("Error while reading Addressbook from Database " + e.getMessage(), e);
-        }
-    }
-
-    public int deleteAll() {
-        try {
-            final Statement selectPersonsStatement = H2Controller.getManager().getConnection().createStatement();
-            return selectPersonsStatement.executeUpdate(DELETE_ALL);
-        } catch (SQLException e) {
-            LOGGER.error("Error while deleting data from Addressbook " + e.getMessage());
-            throw new SqlException("Error while deleting data from Addressbook " + e.getMessage(), e);
-        }
+    public AddressRepository() {
+        super(Address.class, H2Controller.getManager().getEntityManager());
     }
 }

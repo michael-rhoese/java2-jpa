@@ -18,28 +18,44 @@
  */
 package de.fherfurt.jpa.domains;
 
-import lombok.Data;
+import java.util.HashSet;
+import java.util.Set;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import lombok.*;
 
 /**
  * <h2>Address</h2>
  * <p>
  * {description}
  *
- * @author Michael Rhöse
+ * @author Michael RhÃ¶se
  * @version 0.0.0.0, 05/02/2021
  */
-@Data
-public class Address {
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+public class Address extends BaseEntity {
 
-    // Address Table Constants
-    public static final String TABLE_NAME = "ADDRESS";
-    public static final String COLUMN_ID = "ID";
-    public static final String COLUMN_STREET = "STREET";
-    public static final String COLUMN_CITY = "CITY";
-    public static final String COLUMN_ZIPCODE = "ZIPCODE";
+    private static final long serialVersionUID = -1504927840188132365L;
 
-    private Long id;
-    private final String street;
-    private final String city;
-    private final String zipcode;
+    private String street;
+    private String city;
+    private String zipcode;
+
+    @OneToMany(mappedBy = "address", cascade = CascadeType.PERSIST)
+    private Set<Person> persons = new HashSet<>();
+
+    public Address(String street, String city, String zipcode) {
+        this.street = street;
+        this.city = city;
+        this.zipcode = zipcode;
+    }
+
+    @Override
+    public String toString() {
+        return "Address{id=" + this.getId() + ", street=" + street + ", city=" + city + ", zipcode=" + zipcode + '}';
+    }
 }

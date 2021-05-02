@@ -19,7 +19,8 @@
 package de.fherfurt.jpa.domains;
 
 import java.util.Objects;
-import lombok.Data;
+import javax.persistence.*;
+import lombok.*;
 
 /**
  * <h2>Person</h2>
@@ -28,20 +29,21 @@ import lombok.Data;
  * @author Michael Rhöse
  * @version 0.0.0.0, 04/25/2021
  */
-@Data
-public class Person implements Comparable<Person> {
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Person extends BaseEntity implements Comparable<Person> {
 
-    public static final String TABLE_NAME = "PERSON";
-    public static final String COLUMN_ID = "ID";
-    public static final String COLUMN_LASTNAME = "LASTNAME";
-    public static final String COLUMN_FIRSTNAME = "FIRSTNAME";
-    public static final String COLUMN_MAIL = "MAIL";
-    public static final String COLUMN_ADDRESS = "ADDRESS_ID";
+    private static final long serialVersionUID = 7747259252521997483L;
 
-    private Long id;
-    private final String firstName;
-    private final String lastName;
-    private final String eMail;
+    private String firstName;
+    private String lastName;
+    private String eMail;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "address_id", updatable = true)
     private Address address;
 
     @Override
@@ -51,6 +53,6 @@ public class Person implements Comparable<Person> {
 
     @Override
     public String toString() {
-        return this.firstName + " " + this.lastName + " (" + this.eMail + "), " + (Objects.nonNull(this.address) ? address.toString() : " No address");
+        return "Person{id=" + this.getId() + ", firstName=" + firstName + ", lastName=" + lastName + ", eMail=" + eMail + (Objects.nonNull(this.address) ? ", address=" + address.toString() : ", No address") + '}';
     }
 }

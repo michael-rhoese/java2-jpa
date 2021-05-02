@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  *
- * @author Michael Rhöse
+ * @author Michael RhÃ¶se
  */
 class AddressRepositoryTest {
 

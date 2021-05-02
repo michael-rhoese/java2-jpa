@@ -37,9 +37,9 @@ public class AddressBookTest {
 
     private AddressBook prepareAddressBook() {
         final AddressBook res = new AddressBook();
-        maxMustermann = new Person("Max", "Mustermann", "max.mustermann@email.de");
-        emmaWeber = new Person("Emma", "Weber", "emma.mueller@post.de");
-        manfredHerold = new Person("Manfred", "Herold", "manfred@herold.de");
+        maxMustermann = new Person("Max", "Mustermann", "max.mustermann@email.de", null);
+        emmaWeber = new Person("Emma", "Weber", "emma.mueller@post.de", null);
+        manfredHerold = new Person("Manfred", "Herold", "manfred@herold.de", null);
 
         res.addContact(maxMustermann);
         res.addContact(emmaWeber);
@@ -100,9 +100,9 @@ public class AddressBookTest {
         final long frequencyBefore = addressBook.getFrequencyOfLastName("Mustermann");
 
         // WHEN
-        addressBook.addContact(new Person("Moritz", "Mustermann", "foo@bar.com"));
-        addressBook.addContact(new Person("Tobias", "Mustermann", "foo@bar.com"));
-        addressBook.addContact(new Person("Matze", "Mustermann", "foo@bar.com"));
+        addressBook.addContact(new Person("Moritz", "Mustermann", "foo@bar.com", null));
+        addressBook.addContact(new Person("Tobias", "Mustermann", "foo@bar.com", null));
+        addressBook.addContact(new Person("Matze", "Mustermann", "foo@bar.com", null));
 
         final long result = addressBook.getFrequencyOfLastName("Mustermann");
 
@@ -113,7 +113,7 @@ public class AddressBookTest {
     @Test
     void person_should_have_a_human_readable_toString_output() {
         // GIVEM
-        Person felixMeyer = new Person("Felix", "Meyer", "felix@meyer.io");
+        Person felixMeyer = new Person("Felix", "Meyer", "felix@meyer.io", null);
 
         // WHEN
         final String result = felixMeyer.toString();
