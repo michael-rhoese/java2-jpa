@@ -18,28 +18,26 @@
  */
 package de.fherfurt.jpa.domains;
 
-import lombok.Data;
+import lombok.*;
+
+import javax.persistence.Entity;
 
 /**
  * <h2>Address</h2>
  * <p>
  * {description}
  *
- * @author Michael Rhöse
+ * @author Michael RhÃ¶se
  * @version 0.0.0.0, 05/02/2021
  */
-@Data
-public class Address {
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Address extends BaseEntity {
 
-    // Address Table Constants
-    public static final String TABLE_NAME = "ADDRESS";
-    public static final String COLUMN_ID = "ID";
-    public static final String COLUMN_STREET = "STREET";
-    public static final String COLUMN_CITY = "CITY";
-    public static final String COLUMN_ZIPCODE = "ZIPCODE";
-
-    private Long id;
-    private final String street;
-    private final String city;
-    private final String zipcode;
+    private String street;
+    private String city;
+    private String zipcode;
 }

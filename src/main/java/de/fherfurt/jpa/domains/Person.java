@@ -19,7 +19,12 @@
 package de.fherfurt.jpa.domains;
 
 import java.util.Objects;
-import lombok.Data;
+
+import lombok.*;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 /**
  * <h2>Person</h2>
@@ -28,20 +33,23 @@ import lombok.Data;
  * @author Michael Rhöse
  * @version 0.0.0.0, 04/25/2021
  */
-@Data
-public class Person implements Comparable<Person> {
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+public class Person extends BaseEntity implements Comparable<Person> {
 
-    public static final String TABLE_NAME = "PERSON";
-    public static final String COLUMN_ID = "ID";
-    public static final String COLUMN_LASTNAME = "LASTNAME";
-    public static final String COLUMN_FIRSTNAME = "FIRSTNAME";
-    public static final String COLUMN_MAIL = "MAIL";
-    public static final String COLUMN_ADDRESS = "ADDRESS_ID";
+    private String firstName;
+    private String lastName;
+    private String eMail;
 
-    private Long id;
-    private final String firstName;
-    private final String lastName;
-    private final String eMail;
+    public Person(String firstName, String lastName, String eMail) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.eMail = eMail;
+    }
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Address address;
 
     @Override
